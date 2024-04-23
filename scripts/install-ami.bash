@@ -96,3 +96,4 @@ main() {
     forms_flow_web "$1"
     exit 0
 }
+main

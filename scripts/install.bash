@@ -2,7 +2,7 @@
 
 # Function to determine the IP address
 get_ip_address() {
-    ipadd=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+    ipadd=$(curl ifconfig.me)
 #    ipadd=$(hostname -I | awk '{print $1}')
 #    if [ "$(uname)" == "Darwin" ]; then
 #        ipadd=$(ipconfig getifaddr en0)

@@ -2,10 +2,11 @@
 
 # Function to determine the IP address
 get_ip_address() {
-    ipadd=$(hostname -I | awk '{print $1}')
-    if [ "$(uname)" == "Darwin" ]; then
-        ipadd=$(ipconfig getifaddr en0)
-    fi
+    ipadd=$(curl http://169.254.169.254/latest/meta-data/public-ipv4)
+#    ipadd=$(hostname -I | awk '{print $1}')
+#    if [ "$(uname)" == "Darwin" ]; then
+#        ipadd=$(ipconfig getifaddr en0)
+#    fi
 }
 
 # Function to set the appropriate Docker Compose file based on the architecture
@@ -62,15 +63,15 @@ isUp() {
 
 # Function to find the IPv4 address
 find_my_ip() {
-    ipadd=$(hostname -I | awk '{print $1}')
-    if [ "$(uname)" == "Darwin" ]; then
-        ipadd=$(ipconfig getifaddr en0)
-    fi
+#    ipadd=$(hostname -I | awk '{print $1}')
+#    if [ "$(uname)" == "Darwin" ]; then
+#        ipadd=$(ipconfig getifaddr en0)
+#    fi
     ip_add=$ipadd
-    read -p "Confirm that your IPv4 address is $ip_add? [y/n]: " choice
-    if [ "$choice" != "y" ]; then
-        read -p "What is your IPv4 address? " ip_add
-    fi
+#    read -p "Confirm that your IPv4 address is $ip_add? [y/n]: " choice
+#    if [ "$choice" != "y" ]; then
+#        read -p "What is your IPv4 address? " ip_add
+#    fi
 }
 
 # Function to set common properties
@@ -162,12 +163,12 @@ forms_flow_analytics() {
 
 # Function to start forms-flow-webapi
 forms_flow_api() {
-    if [ "$2" == "1" ]; then
-        read -p "What is your Redash API key? " INSIGHT_API_KEY
-        INSIGHT_API_URL="http://$ip_add:7001"
-        echo "INSIGHT_API_URL=$INSIGHT_API_URL" >> "$1/.env"
-        echo "INSIGHT_API_KEY=$INSIGHT_API_KEY" >> "$1/.env"
-    fi
+#    if [ "$2" == "1" ]; then
+#        read -p "What is your Redash API key? " INSIGHT_API_KEY
+#        INSIGHT_API_URL="http://$ip_add:7001"
+#        echo "INSIGHT_API_URL=$INSIGHT_API_URL" >> "$1/.env"
+#        echo "INSIGHT_API_KEY=$INSIGHT_API_KEY" >> "$1/.env"
+#    fi
     docker-compose -p formsflow-ai -f "$1/$docker_compose_file" up --build -d forms-flow-webapi
 }
 
@@ -197,27 +198,27 @@ main() {
     keycloak "$1"
     forms_flow_forms "$1"
     forms_flow_bpm "$1"
-    forms_flow_analytics "$1"
-    if [ "$1" == "1" ]; then
-        forms_flow_api "$1" "$2"
-    fi
+#    forms_flow_analytics "$1"
+#    if [ "$1" == "1" ]; then
+    forms_flow_api "$1" "$2"
+#    fi
     forms_flow_documents "$1"
 
     # Ask the user if they want to install forms-flow-data-analysis-api
-    echo "for opensource - One distinctive capability of the formsflow.ai involves Sentiment Analysis, allowing it to assess sentiments within forms by considering specific topics specified by the designer during form creation. The data analysis api encompasses access to all pertinent interfaces tailored for sentiment analysis"
-    read -p "Do you want to install forms-flow-data-analysis-api? [y/n]: " install_data_analysis
-    if [ "$install_data_analysis" == "y" ]; then
-        forms_flow_data_analysis "$1"
-    else
-        echo "Skipping forms-flow-data-analysis-api installation."
-    fi
+#    echo "for opensource - One distinctive capability of the formsflow.ai involves Sentiment Analysis, allowing it to assess sentiments within forms by considering specific topics specified by the designer during form creation. The data analysis api encompasses access to all pertinent interfaces tailored for sentiment analysis"
+#    read -p "Do you want to install forms-flow-data-analysis-api? [y/n]: " install_data_analysis
+#    if [ "$install_data_analysis" == "y" ]; then
+#        forms_flow_data_analysis "$1"
+#    else
+#        echo "Skipping forms-flow-data-analysis-api installation."
+#    fi
 
-    if [ "$1" == "1" ]; then
-        forms_flow_api "$1" "$2"
-    fi
+#    if [ "$1" == "1" ]; then
+#        forms_flow_api "$1" "$2"
+#    fi
 
-    forms_flow_documents "$1"
-    forms_flow_web "$1"
+#    forms_flow_documents "$1"
+#    forms_flow_web "$1"
     isUp
     echo "********************** formsflow.ai is successfully installed ****************************"
     exit 0
@@ -236,11 +237,11 @@ if ! command -v docker-compose &> /dev/null; then
 fi
 
 # Start the installation process
-read -p "Do you want analytics to include in the installation? [y/n]: " choice
-if [ "$choice" == "y" ]; then
-    analytics=1
-else
-    analytics=0
-fi
+#read -p "Do you want analytics to include in the installation? [y/n]: " choice
+#if [ "$choice" == "y" ]; then
+#    analytics=1
+#else
+analytics=0
+#fi
 
 main "." "$analytics"

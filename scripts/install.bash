@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Function to determine the IP address
-get_ip_address() {
-    ipadd=$(curl ifconfig.me)
+#get_ipaddress() {
+ipadd=$(curl ifconfig.me)
 #    ipadd=$(hostname -I | awk '{print $1}')
 #    if [ "$(uname)" == "Darwin" ]; then
 #        ipadd=$(ipconfig getifaddr en0)
@@ -50,7 +50,7 @@ fi
 # Function to check if the web API is up
 isUp() {
     while true; do
-        HTTP=$(curl -LI "http://$ip_add:5001" -o /dev/null -w "%{http_code}" -s)
+        HTTP=$(curl -LI "http://$ipadd:5001" -o /dev/null -w "%{http_code}" -s)
         if [ "$HTTP" == "200" ]; then
             echo "formsflow.ai is successfully installed."
             exit 0
@@ -62,15 +62,15 @@ isUp() {
 }
 
 # Function to find the IPv4 address
-find_my_ip() {
+#find_my_ip() {
 #    ipadd=$(hostname -I | awk '{print $1}')
 #    if [ "$(uname)" == "Darwin" ]; then
 #        ipadd=$(ipconfig getifaddr en0)
 #    fi
-    ip_add=$ipadd
-#    read -p "Confirm that your IPv4 address is $ip_add? [y/n]: " choice
+#    ipadd=$ipadd
+#    read -p "Confirm that your IPv4 address is $ipadd? [y/n]: " choice
 #    if [ "$choice" != "y" ]; then
-#        read -p "What is your IPv4 address? " ip_add
+#        read -p "What is your IPv4 address? " ipadd
 #    fi
 }
 
@@ -91,13 +91,13 @@ keycloak() {
     echo KEYCLOAK_START_MODE=start-dev >> .env
     docker-compose -p formsflow-ai -f "$1/$docker_compose_file" up --build -d keycloak
     sleep 5
-    KEYCLOAK_URL="http://$ip_add:8080"
+    KEYCLOAK_URL="http://$ipadd:8080"
     export KEYCLOAK_URL
 }
 
 # Function to start forms-flow-forms
 forms_flow_forms() {
-    FORMIO_DEFAULT_PROJECT_URL="http://$ip_add:3001"
+    FORMIO_DEFAULT_PROJECT_URL="http://$ipadd:3001"
     echo "FORMIO_DEFAULT_PROJECT_URL=$FORMIO_DEFAULT_PROJECT_URL" >> "$1/.env"
     docker-compose -p formsflow-ai -f "$1/$docker_compose_file" up --build -d forms-flow-forms
     sleep 5
@@ -105,18 +105,18 @@ forms_flow_forms() {
 
 # Function to start forms-flow-web
 forms_flow_web() {
-    BPM_API_URL="http://$ip_add:8000/camunda"
+    BPM_API_URL="http://$ipadd:8000/camunda"
     echo "BPM_API_URL=$BPM_API_URL" >> "$1/.env"
     docker-compose -p formsflow-ai -f "$1/$docker_compose_file" up --build -d forms-flow-web
 }
 
 # Function to start forms-flow-bpm
 forms_flow_bpm() {
-    FORMSFLOW_API_URL="http://$ip_add:5001"
-    WEBSOCKET_SECURITY_ORIGIN="http://$ip_add:3000"
+    FORMSFLOW_API_URL="http://$ipadd:5001"
+    WEBSOCKET_SECURITY_ORIGIN="http://$ipadd:3000"
     SESSION_COOKIE_SECURE="false"
     KEYCLOAK_WEB_CLIENTID="forms-flow-web"
-    REDIS_URL="redis://$ip_add:6379/0"
+    REDIS_URL="redis://$ipadd:6379/0"
 
 
     echo "FORMSFLOW_API_URL=$FORMSFLOW_API_URL" >> "$1/.env"
@@ -130,7 +130,7 @@ forms_flow_bpm() {
 
 # Function to start forms-flow-analytics
 forms_flow_analytics() {
-    REDASH_HOST="http://$ip_add:7001"
+    REDASH_HOST="http://$ipadd:7001"
     PYTHONUNBUFFERED="0"
     REDASH_LOG_LEVEL="INFO"
     REDASH_REDIS_URL="redis://redis:6379/0"
@@ -165,7 +165,7 @@ forms_flow_analytics() {
 forms_flow_api() {
 #    if [ "$2" == "1" ]; then
 #        read -p "What is your Redash API key? " INSIGHT_API_KEY
-#        INSIGHT_API_URL="http://$ip_add:7001"
+#        INSIGHT_API_URL="http://$ipadd:7001"
 #        echo "INSIGHT_API_URL=$INSIGHT_API_URL" >> "$1/.env"
 #        echo "INSIGHT_API_KEY=$INSIGHT_API_KEY" >> "$1/.env"
 #    fi
@@ -174,7 +174,7 @@ forms_flow_api() {
 
 # Function to start forms-flow-documents-api
 forms_flow_documents() {
-    DOCUMENT_SERVICE_URL="http://$ip_add:5006"
+    DOCUMENT_SERVICE_URL="http://$ipadd:5006"
     echo "DOCUMENT_SERVICE_URL=$DOCUMENT_SERVICE_URL" >> "$1/.env"
     docker-compose -p formsflow-ai -f "$1/$docker_compose_file" up --build -d forms-flow-documents-api
     sleep 5
@@ -182,7 +182,7 @@ forms_flow_documents() {
 
 # Function to start forms-flow-data-analysis-api
 forms_flow_data_analysis() {
-    DATA_ANALYSIS_API_BASE_URL="http://$ip_add:6001"
+    DATA_ANALYSIS_API_BASE_URL="http://$ipadd:6001"
     DATA_ANALYSIS_DB_URL="postgresql://general:changeme@forms-flow-data-analysis-db:5432/dataanalysis"
     echo "DATA_ANALYSIS_API_BASE_URL=$DATA_ANALYSIS_API_BASE_URL" >> "$1/.env"
     echo "DATA_ANALYSIS_DB_URL=$DATA_ANALYSIS_DB_URL" >> "$1/.env"

@@ -218,7 +218,7 @@ main() {
 #    fi
 
 #    forms_flow_documents "$1"
-#    forms_flow_web "$1"
+    forms_flow_web "$1"
     isUp
     echo "********************** formsflow.ai is successfully installed ****************************"
     exit 0

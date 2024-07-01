@@ -108,6 +108,8 @@ forms_flow_web() {
     BPM_API_URL="http://$ipadd:8000/camunda"
     echo "BPM_API_URL=$BPM_API_URL" >> "$1/.env"
     docker-compose -p formsflow-ai -f "$1/$docker_compose_file" up --build -d forms-flow-web
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password changeme
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE
 }
 
 # Function to start forms-flow-bpm
@@ -221,8 +223,6 @@ main() {
     forms_flow_web "$1"
     isUp
     echo "********************** formsflow.ai is successfully installed ****************************"
-    docker exec keycloak /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password changeme
-    docker exec keycloak /opt/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE
     exit 0
 }
 

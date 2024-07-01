@@ -221,6 +221,8 @@ main() {
     forms_flow_web "$1"
     isUp
     echo "********************** formsflow.ai is successfully installed ****************************"
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh config credentials --server http://localhost:8080/auth --realm master --user admin --password changeme
+    docker exec keycloak /opt/keycloak/bin/kcadm.sh update realms/master -s sslRequired=NONE
     exit 0
 }
 

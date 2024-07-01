@@ -72,7 +72,7 @@ isUp() {
 #    if [ "$choice" != "y" ]; then
 #        read -p "What is your IPv4 address? " ipadd
 #    fi
-}
+#}
 
 # Function to set common properties
 set_common_properties() {

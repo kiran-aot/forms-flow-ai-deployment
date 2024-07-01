@@ -7,7 +7,7 @@ ipadd=$(curl ifconfig.me)
 #    if [ "$(uname)" == "Darwin" ]; then
 #        ipadd=$(ipconfig getifaddr en0)
 #    fi
-}
+#}
 
 # Function to set the appropriate Docker Compose file based on the architecture
 set_docker_compose_file() {

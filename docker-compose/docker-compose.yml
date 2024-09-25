@@ -36,6 +36,8 @@ services:
       - KEYCLOAK_ADMIN_PASSWORD=${KEYCLOAK_ADMIN_PASSWORD:-changeme}
       - KEYCLOAK_START_MODE=${KEYCLOAK_START_MODE:-start-dev}
       - KEYCLOAK_HTTP_PATH=${KEYCLOAK_HTTP_PATH:-/auth}
+      - KEYCLOAK_FRONTEND_URL=http://localhost:8080/auth  # Optional: configure HTTP path
+      - KEYCLOAK_DISABLE_HTTPS=true  # Disable HTTPS to force HTTP
 
     ports:
       - "8080:8080"
